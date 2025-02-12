@@ -1,0 +1,329 @@
+<!-- products.html (Completo e Corrigido - Com .bind(), Confirmação) -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Produtos</title>
+    <!-- Toastify CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <style>
+        /* Reutilizando os estilos do index.html, exceto estilos específicos do index que não se aplicam aqui */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 200px;
+            background-color: #34495e;
+            color: #fff;
+            padding-top: 20px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sidebar-logo {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .sidebar-logo img {
+            max-width: 150px;
+            height: auto;
+        }
+
+        .sidebar h1 {
+            font-size: 1.8em;
+            margin: 0;
+            padding: 15px 0;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .sidebar h2 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+        }
+
+        .sidebar li {
+            padding: 0;
+        }
+
+        .sidebar li a {
+            display: block;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            transition: background-color: 0.3s ease;
+            border-radius: 5px;
+            margin: 5px 10px;
+        }
+
+        .sidebar li a:hover {
+            background-color: #2c3e50;
+        }
+
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            margin-left: 200px;
+            margin-top: 20px;
+            margin-right: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #3498db;
+        }
+
+        h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 10px;
+            margin-top: 25px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        form {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 0;
+            font-weight: bold;
+            position: relative;
+            padding-left: 10px;
+            margin-top: 5px;
+        }
+
+        .example-text {
+            font-size: 0.9em;
+            color: #777;
+            margin-bottom: 5px;
+            font-style: italic;
+            display: block;
+            margin-top: -5px;
+        }
+
+        textarea#descricao {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-top: 5px;
+        }
+
+        input[type="text"], input[type="number"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button[type="submit"], .delete-button {
+            background-color: #3498db;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color: 0.3s ease;
+            text-decoration: none;
+        }
+
+        .delete-button {
+            background-color: #e74c3c;
+        }
+
+        .delete-button:hover {
+            background-color: #c0392b;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #2980b9;
+        }
+
+        .flash-messages {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #eee;
+            border-radius: 4px;
+        }
+
+        .flash-messages ul {
+            padding-left: 20px;
+        }
+
+        .flash-messages li {
+            list-style-type: disc;
+            padding: 5px 0;
+            border-bottom: none;
+        }
+
+        .flash-messages li:last-child {
+            border-bottom: none;
+        }
+    </style>
+    <script>
+        function forceUpperCase(element) {
+            element.value = element.value.toUpperCase();
+        }
+
+        function confirmDeleteProduct(productNumber) {
+          return confirm("Tem certeza que deseja excluir o produto Nº " + productNumber + "?");
+        }
+    </script>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo">
+        </div>
+        <h2>Menu</h2>
+        <ul>
+            <li><a href="{{ url_for('index') }}">Solicitações</a></li>
+            <li><a href="{{ url_for('products') }}">Produtos</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <div class="container">
+            <h1>Cadastro de Produtos</h1>
+
+            <!-- Formulário para adicionar produto -->
+            <h2>Adicionar Novo Produto</h2>
+            <form action="{{ url_for('add_product_route') }}" method="POST">
+                <p class="example-text">EXEMPLO:<br>NOME DO PRODUTO: MACARRÃO INTEGRAL ESPAGUETE PACOTE DE 400G<br>TIPO: Macarrão Integral<br>FORMATO: Espaguete<br>UNIDADE: Pacote<br>PESO/VOLUME: 400g</p>
+                <label for="descricao">Descrição:</label>
+                <textarea id="descricao" name="descricao" oninput="forceUpperCase(this)" required></textarea>
+
+                <label for="unidade">Unidade:</label>
+                <input type="text" id="unidade" name="unidade" oninput="forceUpperCase(this)" required>
+
+                <label for="classificacao">Classificação:</label>
+                <input type="text" id="classificacao" name="classificacao" oninput="forceUpperCase(this)" required>
+
+                <button type="submit">Cadastrar Produto</button>
+            </form>
+
+            <!-- Exibir a lista de produtos cadastrados -->
+            <h2>Produtos Cadastrados</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nº do Produto</th>
+                        <th>Descrição</th>
+                        <th>Unidade</th>
+                        <th>Classificação</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in product_list %}
+                    <tr>
+                        <td>{{ product['Nº do Produto'] }}</td>
+                        <td>{{ product['Descrição'] }}</td>
+                        <td>{{ product['Unidade'] }}</td>
+                        <td>{{ product['Classificação'] }}</td>
+                        <td>
+                            <form action="{{ url_for('delete_product') }}" method="POST" style="margin: 0;" onsubmit="return confirmDeleteProduct('{{ product['Nº do Produto'] }}')">
+                                <input type="hidden" name="product_number" value="{{ product['Nº do Produto'] }}">
+                                <button type="submit" class="delete-button">Excluir</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+           <!-- Exibir mensagens de flash como Toast (com .bind()) -->
+            {% with messages = get_flashed_messages(with_categories=True) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                      <script>
+                        setTimeout(function(cat, msg) { // Recebe cat e msg como argumentos
+                          Toastify({
+                            text: msg,  // Usa a variável local msg
+                            duration: 3000,
+                            gravity: "top",
+                            position: "right",
+                            backgroundColor: cat === "success" ? "linear-gradient(to right, #00b09b, #96c93d)" : "linear-gradient(to right, #ff5f6d, #ffc371)",
+                            close: true,
+                            stopOnFocus: true,
+                            style: {
+                              zIndex: 999999
+                            }
+                          }).showToast();
+                        }.bind(null, "{{ category }}", "{{ message }}"), 500); // Passa os valores com .bind()
+                      </script>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+    <!-- Toastify JS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script>
+        function forceUpperCase(element) {
+            element.value = element.value.toUpperCase();
+        }
+    </script>
+</body>
+</html>
